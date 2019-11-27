@@ -1,5 +1,4 @@
 require 'nokogiri'
-require_relative 'building.rb'
 
 class Map
   def initialize(fname)

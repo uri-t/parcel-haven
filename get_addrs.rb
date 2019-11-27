@@ -12,5 +12,7 @@ File.open('addr_test.txt').each do |line|
   File.open("data/addr/#{name}.json", 'w') do |f|
     f.write(Net::HTTP.get(uri))
   end
+
+  sleep(1)
 end
   
