@@ -1,5 +1,7 @@
 require 'net/http'
 require 'nokogiri'
+require 'cgi'
+require 'json'
 
 class Parcel
   def initialize(pid)
@@ -11,7 +13,16 @@ class Parcel
   end
   
   def html
-    @html ||= Net::HTTP.get(URI("http://gis.vgsi.com/newhavenct/Parcel.aspx?pid=#{@pid}"))
+    if @html
+      return @html
+    else
+      filename = "data/html/#{@pid}.html"
+      if File.file?(filename)
+        @html = File.read(filename)
+      else
+        @html = Net::HTTP.get(URI("http://gis.vgsi.com/newhavenct/Parcel.aspx?pid=#{@pid}"))
+      end
+    end
   end
 
   def parsed_html
@@ -19,7 +30,7 @@ class Parcel
   end
 
   def owner
-    @owner ||= parsed_html.search("//span[@id='MainContent_lblGenOwner']/text()").to_s.tr(",","")
+    @owner ||= CGI.unescapeHTML(parsed_html.search("//span[@id='MainContent_lblGenOwner']/text()").to_s.tr(",",""))
   end
 
   def appraisal
@@ -27,6 +38,14 @@ class Parcel
   end
 
   def location
-    @location ||= parsed_html.search("//span[@id='MainContent_lblLocation']/text()").to_s.tr(",","")
+    @location ||= CGI.unescapeHTML(parsed_html.search("//span[@id='MainContent_lblLocation']/text()").to_s.tr(",",""))
+  end
+
+  def coords
+    coords ||= JSON.parse(File.read("data/addr/#{location.gsub(/[^0-9A-Z]/,'_')}.json"))['results'][0]['geometry']['location']
   end
 end
+
+
+p = Parcel.new(12116)
+puts p.coords
