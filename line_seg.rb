@@ -21,9 +21,9 @@ class GeoLineSeg
   end
 
   def self.orientation(p1, p2, p3)
-    x = :lon
-    y = :lat
-
+    x = "lng"
+    y = "lat"
+    
     d = (p2[y]-p1[y])*(p3[x] - p2[x])-(p3[y]-p2[y])*(p2[x] - p1[x])
     if d == 0
       return d
