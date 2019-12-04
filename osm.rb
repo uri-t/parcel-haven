@@ -34,6 +34,23 @@ class Map
     @raw_ways ||= doc.search('//way')
   end
 
+  def building_nodes
+    if ! @building_nodes
+      @building_nodes = Hash.new
+      
+      raw_ways.each do |way|
+        tag_names = way.search("tag").map {|x| x.attributes['k'].value}
+        if tag_names.include?("building")
+          id = way.attributes['id'].value
+          nds = way.search("nd").map {|x| x.attributes['ref'].value}
+          @building_nodes[id] = nds
+        end
+      end
+    end
+
+    return @building_nodes
+  end
+      
   def get_building_pts
     raw_ways.each do |way|
       tag_names = way.search("tag").map {|x| x.attributes['k'].value}
@@ -53,7 +70,7 @@ class Map
       raw_ways.each do |way|
         tag_names = way.search("tag").map {|x| x.attributes['k'].value}
         if tag_names.include?("building")
-          @building_ids <<  way.attributes['id']
+          @building_ids <<  way.attributes['id'].value
         end
       end
     end

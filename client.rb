@@ -5,17 +5,15 @@ require_relative 'osm.rb'
 p = Parcel.new(12115)
 pt = p.coords
 
-map = Map.new('data/map.osm')
+map = Map.new('data/nhv')
 ids = map.building_ids
-puts ids.length
+puts ids[0].class
 
 strt = Time.now
 
 ids.each_with_index do |id, ind|
-  if ind % 20 == 0 
-    puts "building no. #{ind}: #{Time.now-strt} seconds elapsed"
-  end
   b = Building.new(map, id)
+  
   if b.contains?(pt)
     puts("pt contained by building #{id}")
   end

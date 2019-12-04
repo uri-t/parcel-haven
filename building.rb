@@ -9,10 +9,17 @@ class Building
   end
 
   def nds
-    @nds ||= @map.doc.search("//way[@id=#{@id}]/nd/@ref").map {|x| x.value}
+     if ! @nds
+       @map.building_nodes
+    end
+    @nds ||= @map.building_nodes[@id]
+    return @nds
   end
 
   def pts
+    if ! @pts
+      nds
+    end
     @pts ||= nds.map {|x| @map.node_dict[x]}
   end
 
@@ -22,7 +29,6 @@ class Building
     o = Point.new({lat: 0, lng: 0})
     ln = GeoLineSeg.new(o, pt)
 
-    
     lns = []
 
     # build array of lines that make up building polygon
@@ -45,3 +51,17 @@ class Building
 
 end
 
+def test
+  map = Map.new('data/nhv')
+  map.building_nodes
+  b = Building.new(map, "39242811")
+  strt = Time.now
+  nds =  b.nds
+  elap = Time.now-strt
+  puts nds
+  puts "#{elap} s for nds call"
+
+  puts b.pts.map {|p| p.lng}
+end
+
+#test
