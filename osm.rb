@@ -1,5 +1,5 @@
 require 'nokogiri'
-
+require_relative 'geom.rb'
 class Map
   def initialize(fname)
     @doc = File.open(fname) do |f|
@@ -23,7 +23,7 @@ class Map
         lon = nd.attributes['lon'].value.to_f
         id = nd.attributes['id'].value
         
-        @node_dict[id] = Hash["lat", lat, "lng", lon]
+        @node_dict[id] = Point.new({lat: lat, lng: lon})
       end
     end
     
@@ -40,21 +40,23 @@ class Map
       if tag_names.include?("building")
         nds = way.search("nd").map {|x| x.attributes['ref'].value}
         nds.each do |nd|
-          puts "#{node_dict[nd]["lng"]}, #{node_dict[nd]["lat"]}"
+          puts "#{node_dict[nd].lng}, #{node_dict[nd].lat}"
         end
         puts ""
       end
     end
   end
-  def get_building_ids
-    ids = []
-    raw_ways.each do |way|
-      tag_names = way.search("tag").map {|x| x.attributes['k'].value}
-      if tag_names.include?("building")
-        ids <<  way.attributes['id']
+  
+  def building_ids
+    if ! @building_ids
+      @building_ids = []
+      raw_ways.each do |way|
+        tag_names = way.search("tag").map {|x| x.attributes['k'].value}
+        if tag_names.include?("building")
+          @building_ids <<  way.attributes['id']
+        end
       end
     end
-    return ids
+    return @building_ids
   end
-      
 end

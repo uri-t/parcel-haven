@@ -1,3 +1,5 @@
+require_relative 'geom.rb'
+
 class GeoLineSeg
 
   attr_accessor :p1
@@ -21,10 +23,8 @@ class GeoLineSeg
   end
 
   def self.orientation(p1, p2, p3)
-    x = "lng"
-    y = "lat"
     
-    d = (p2[y]-p1[y])*(p3[x] - p2[x])-(p3[y]-p2[y])*(p2[x] - p1[x])
+    d = (p2.lat-p1.lat)*(p3.lng - p2.lng)-(p3.lat-p2.lat)*(p2.lng - p1.lng)
     if d == 0
       return d
     end
@@ -32,7 +32,16 @@ class GeoLineSeg
   end
 end
 
-#ln1 = GeoLineSeg.new({lon: 0, lat: 0}, {lon: 1, lat: 0})
-#ln2 = GeoLineSeg.new({lon: 0, lat: 1}, {lon: 1, lat: 1}) 
+def test
+  p1 = Point.new({lng: 0, lat: 0})
+  p2 = Point.new({lng: 1, lat: 1})
+  p3 = Point.new({lng: 0, lat: 1})
+  p4 = Point.new({lng: 1, lat: 0})
 
-#puts(ln2.intersects?(ln1))
+  ln1 = GeoLineSeg.new(p1, p2)
+  ln2 = GeoLineSeg.new(p3, p4)
+
+  puts(ln2.intersects?(ln1))
+end
+
+#test

@@ -2,7 +2,7 @@ require 'net/http'
 require 'nokogiri'
 require 'cgi'
 require 'json'
-
+require_relative 'geom.rb'
 class Parcel
   def initialize(pid)
     @pid = pid
@@ -42,7 +42,11 @@ class Parcel
   end
 
   def coords
-    coords ||= JSON.parse(File.read("data/addr/#{location.gsub(/[^0-9A-Z]/,'_')}.json"))['results'][0]['geometry']['location']
+    if ! @coords
+      raw_hash = JSON.parse(File.read("data/addr/#{location.gsub(/[^0-9A-Z]/,'_')}.json"))['results'][0]['geometry']['location']
+      @coords = Point.new({lat: raw_hash['lat'], lng: raw_hash['lng']})
+    end
+    return @coords
   end
 end
 

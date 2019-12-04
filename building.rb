@@ -1,3 +1,4 @@
+require_relative 'geom.rb'
 require_relative 'osm.rb'
 require_relative 'line_seg.rb'
 
@@ -18,7 +19,7 @@ class Building
   def contains?(pt)
     #TODO add simple bounding box test case
     #TODO finish intersection counting code (constructing list of lines...)
-    o = {"lat" => 0, "lng" =>  0}
+    o = Point.new({lat: 0, lng: 0})
     ln = GeoLineSeg.new(o, pt)
 
     
