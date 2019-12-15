@@ -4,7 +4,7 @@ require_relative 'parcel.rb'
 
 map = Map.new('data/nhv')
 
-f_out  = File.open("parcel_to_building.txt", 'w')
+f_out  = File.open("data/parcel_to_building.txt", 'w')
 
 File.open("data/addr_parcels.txt").each do |line|
   p = Parcel.new(line.strip)
