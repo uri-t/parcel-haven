@@ -43,13 +43,14 @@ class Parcel
 
   def coords
     if ! @coords
-      raw_hash = JSON.parse(File.read("data/addr/#{location.gsub(/[^0-9A-Z]/,'_')}.json"))['results'][0]['geometry']['location']
-      @coords = Point.new({lat: raw_hash['lat'], lng: raw_hash['lng']})
+      fname = "data/addr/#{location.gsub(/[^0-9A-Z]/,'_')}.json"
+      if File.exists? fname
+        raw_hash = JSON.parse(File.read(fname))['results'][0]['geometry']['location']
+        @coords = Point.new({lat: raw_hash['lat'], lng: raw_hash['lng']})
+      end
     end
     return @coords
   end
 end
 
 
-p = Parcel.new(12116)
-puts p.coords

@@ -5,11 +5,11 @@ require_relative 'line_seg.rb'
 class Building
   def initialize(map, id)
     @map = map
-    @id = id
+    @id = id.to_s
   end
 
   def nds
-     if ! @nds
+    if ! @nds
        @map.building_nodes
     end
     @nds ||= @map.building_nodes[@id]
@@ -23,6 +23,17 @@ class Building
     @pts ||= nds.map {|x| @map.node_dict[x]}
   end
 
+  def plot_building
+    IO.popen('gnuplot', 'r+') do |io|
+      io.puts "plot '-' w l"
+      pts.each do |pt|
+        io.puts "#{pt.lng}, #{pt.lat}"
+      end
+      io.puts("e")
+      gets
+    end
+  end
+  
   def contains?(pt)
     #TODO add simple bounding box test case
     #TODO finish intersection counting code (constructing list of lines...)
